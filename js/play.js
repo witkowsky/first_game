@@ -54,13 +54,16 @@ var playState = {
             star.body.bounce.y = 0.7 + Math.random() * 0.2;
         }
 
-
         //create score text
         this.score = 0;
         this.scoreText = game.add.text(16, 16, 'score: 0', {fontSize: '32px', fill: '#fff'});
 
         // our controls
         this.cursors = game.input.keyboard.createCursorKeys();
+
+        this.loserTimeout = setTimeout(function () {
+            game.state.start('loser')
+        }, 60000);
     },
 
     update: function () {
@@ -99,6 +102,7 @@ var playState = {
     },
 
     collectStar: function(player, star) {
+        game.sound.play('collide');
         star.kill();
         this.score += 10;
 
@@ -107,6 +111,7 @@ var playState = {
 
     checkGameStatus: function() {
         if (this.countStarsAlive() == 0) {
+            clearTimeout(this.loserTimeout);
             game.state.start('win');
         }
     },
